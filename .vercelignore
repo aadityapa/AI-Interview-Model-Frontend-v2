@@ -1,0 +1,4 @@
+.pytest_cache/
+.git/
+frontend/admin-dashboard/node_modules/
+frontend/admin-dashboard/.admin_dashboard_building/
