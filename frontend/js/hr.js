@@ -810,7 +810,7 @@ export async function scheduleInterview() {
       } else if (data.email_error) {
         msg += ` Email: ${data.email_error}`;
       } else if (!data.smtp_configured) {
-        msg += " Add SMTP settings in .env to email the link automatically.";
+        msg += " Copy the invite link and access key below to share with the candidate.";
       }
       if (accessKey && !data.email_sent) {
         msg += ` Access Key: ${accessKey}`;
