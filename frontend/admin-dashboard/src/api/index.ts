@@ -6,7 +6,9 @@ import type {
   InterviewStatus,
   Session,
 } from "../types";
-import { apiDelete, apiGet, apiPatch, apiPut } from "./client";
+import { apiDelete, apiGet, apiPatch, apiPut, wakeBackend } from "./client";
+
+export { wakeBackend };
 import { ensureSessionsFromCandidates } from "../utils/scoreUtils";
 
 export type InterviewSchedule = {

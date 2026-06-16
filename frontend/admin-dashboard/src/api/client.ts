@@ -34,18 +34,44 @@ export function invalidateApiCache(prefix?: string): void {
   }
 }
 
+const RETRYABLE_STATUS = new Set([502, 503, 504]);
+const RETRY_ATTEMPTS = 5;
+const RETRY_DELAY_MS = 10_000;
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
+/** Ping backend health before API calls (Render free tier cold start). */
+export async function wakeBackend(): Promise<void> {
+  try {
+    await fetch("/health/live", { cache: "no-store" });
+  } catch {
+    /* non-fatal */
+  }
+}
+
 /** Authenticated fetch; clears storage and reloads on 401 when a token was sent. */
 export async function authFetch(path: string, init?: RequestInit): Promise<Response> {
   const token = getAuthToken();
   const headers = new Headers(init?.headers || undefined);
   if (token) headers.set("Authorization", `Bearer ${token}`);
-  const res = await fetch(path, { ...init, headers });
-  if (res.status === 401 && token) {
-    clearAuthSession();
-    invalidateApiCache();
-    window.setTimeout(() => window.location.reload(), 0);
+
+  let lastRes: Response | null = null;
+  for (let attempt = 0; attempt < RETRY_ATTEMPTS; attempt += 1) {
+    const res = await fetch(path, { ...init, headers });
+    lastRes = res;
+    if (!RETRYABLE_STATUS.has(res.status) || attempt === RETRY_ATTEMPTS - 1) {
+      if (res.status === 401 && token) {
+        clearAuthSession();
+        invalidateApiCache();
+        window.setTimeout(() => window.location.reload(), 0);
+      }
+      return res;
+    }
+    await sleep(RETRY_DELAY_MS);
   }
-  return res;
+  return lastRes as Response;
 }
 
 async function _rawGet<T>(path: string): Promise<T> {
@@ -58,7 +84,13 @@ async function _rawGet<T>(path: string): Promise<T> {
     data = text;
   }
   if (!res.ok) {
-    throw new Error(typeof data === "string" ? data : data?.error || `Request failed (${res.status})`);
+    const msg =
+      res.status === 502 || res.status === 503 || res.status === 504
+        ? "Backend is waking up (hosted server was idle). Refresh the page or wait a moment and try again."
+        : typeof data === "string"
+          ? data
+          : data?.error || `Request failed (${res.status})`;
+    throw new Error(msg);
   }
   if (data && typeof data === "object" && data.error) throw new Error(String(data.error));
   return data as T;

@@ -15,7 +15,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import type { Candidate, Interview, InterviewStatus } from "../types";
-import { deleteCandidate, getCandidates, getSchedules, type InterviewSchedule } from "../api";
+import { deleteCandidate, getCandidates, getSchedules, wakeBackend, type InterviewSchedule } from "../api";
 import { motion, useReducedMotion } from "framer-motion";
 import { listChildMotion } from "../lib/motionPresets";
 import { normalizeScore, weightedCandidateScore } from "../utils/scoreUtils";
@@ -772,6 +772,7 @@ export function HrDashboard({
       try {
         setLoading(true);
         setError("");
+        await wakeBackend();
         const [c, sch] = await Promise.all([getCandidates(), getSchedules()]);
         if (!alive) return;
         setCandidates(c);
