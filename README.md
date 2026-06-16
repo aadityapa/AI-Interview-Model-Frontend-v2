@@ -87,7 +87,7 @@ Open `http://127.0.0.1:5173/admin/`
    - `/` — HR/candidate UI
    - `/admin` — React admin dashboard
 
-**Note:** API calls use same-origin paths (`/auth`, `/hr`, etc.). For a working app on Vercel you must either proxy those routes to your backend or deploy the backend separately and configure CORS + a reverse proxy.
+**Production backend (Render):** API calls are proxied via `vercel.json` to `https://ai-interview-backend-u6y0.onrender.com`. Update that URL in `vercel.json` if your Render service URL changes.
 
 ## Backend / Microservices / Docker
 
