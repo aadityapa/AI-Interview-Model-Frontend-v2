@@ -52,7 +52,7 @@ FRONTEND_DIR=D:\AI-Interview-Model-F-V2\frontend
 **Terminal 1 — build frontend:**
 ```bat
 cd D:\AI-Interview-Model-F-V2
-frontend\start.bat
+start_frontend.bat
 ```
 
 **Terminal 2 — start backend:**
@@ -82,7 +82,7 @@ Then open `http://127.0.0.1:2020`.
 
 | Variable | File | Purpose |
 |----------|------|---------|
-| `BACKEND_ROOT` | optional `.env` in this repo | Override path to B-V2 for `frontend\start.bat` |
+| `BACKEND_ROOT` | optional `.env` in this repo | Override path to B-V2 for `start_app.bat` |
 | `VITE_BACKEND_URL` | `frontend/admin-dashboard/.env.development` | Vite dev proxy target (default `http://127.0.0.1:2020`) |
 
 For **microservices gateway** dev, set:
@@ -120,7 +120,7 @@ start_app.bat --http --no-browser
 
 ```bat
 cd D:\AI-Interview-Model-F-V2
-frontend\start.bat --dev
+start_frontend.bat --dev
 ```
 
 Open `http://127.0.0.1:5173/admin/` — API calls proxy to `http://127.0.0.1:2020`.
@@ -161,8 +161,9 @@ Or use SQLite by removing `AUTH_DB_URL` from backend `.env`.
 Build the admin UI:
 
 ```bat
-cd D:\AI-Interview-Model-F-V2
-frontend\start.bat
+cd D:\AI-Interview-Model-F-V2\frontend\admin-dashboard
+npm install
+npm run build
 ```
 
 Then restart the backend.
