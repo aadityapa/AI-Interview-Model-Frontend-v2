@@ -30,7 +30,6 @@
     { "source": "/answer", "destination": "https://ai-interview-backend-u6y0.onrender.com/answer" },
     { "source": "/submit", "destination": "https://ai-interview-backend-u6y0.onrender.com/submit" },
     { "source": "/report", "destination": "https://ai-interview-backend-u6y0.onrender.com/report" },
-    { "source": "/network-info", "destination": "https://ai-interview-backend-u6y0.onrender.com/network-info" },
     { "source": "/models", "destination": "https://ai-interview-backend-u6y0.onrender.com/models" },
     { "source": "/candidates/:path*", "destination": "https://ai-interview-backend-u6y0.onrender.com/candidates/:path*" },
     { "source": "/candidates", "destination": "https://ai-interview-backend-u6y0.onrender.com/candidates" },

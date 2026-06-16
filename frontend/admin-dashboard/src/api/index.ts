@@ -76,13 +76,6 @@ export async function deleteSchedule(scheduleId: string): Promise<boolean> {
   return true;
 }
 
-export async function getInterviewRecord(interviewId: string): Promise<InterviewRecord | null> {
-  const id = String(interviewId || "").trim();
-  if (!id) return null;
-  const data = await apiGet<{ record: InterviewRecord }>(`/hr/interviews/${encodeURIComponent(id)}`);
-  return data?.record || null;
-}
-
 export async function deleteInterviewRecord(interviewId: string): Promise<boolean> {
   const id = String(interviewId || "").trim();
   if (!id) return false;

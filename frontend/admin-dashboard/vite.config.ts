@@ -18,7 +18,6 @@ const API_PROXY_PREFIXES = [
   "/answer",
   "/submit",
   "/report",
-  "/network-info",
   "/models",
   "/candidates",
   "/health",

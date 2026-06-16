@@ -15,7 +15,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import type { Candidate, Interview, InterviewStatus } from "../types";
-import { deleteCandidate, getCandidates, getSchedules, wakeBackend, type InterviewSchedule } from "../api";
+import { deleteCandidate, getDashboardData, getSchedules, wakeBackend, type InterviewSchedule } from "../api";
 import { motion, useReducedMotion } from "framer-motion";
 import { listChildMotion } from "../lib/motionPresets";
 import { normalizeScore, weightedCandidateScore } from "../utils/scoreUtils";
@@ -761,8 +761,8 @@ export function HrDashboard({
   const [schedules, setSchedules] = useState<InterviewSchedule[]>([]);
 
   const refresh = async () => {
-    const [c, sch] = await Promise.all([getCandidates(), getSchedules()]);
-    setCandidates(c);
+    const [dash, sch] = await Promise.all([getDashboardData(500), getSchedules()]);
+    setCandidates(dash.candidates);
     setSchedules(sch);
   };
 
@@ -773,9 +773,9 @@ export function HrDashboard({
         setLoading(true);
         setError("");
         await wakeBackend();
-        const [c, sch] = await Promise.all([getCandidates(), getSchedules()]);
+        const [dash, sch] = await Promise.all([getDashboardData(500), getSchedules()]);
         if (!alive) return;
-        setCandidates(c);
+        setCandidates(dash.candidates);
         setSchedules(sch);
       } catch (e: any) {
         if (!alive) return;
