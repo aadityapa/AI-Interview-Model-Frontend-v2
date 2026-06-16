@@ -1,0 +1,9 @@
+{
+  "name": "ai-interview-model-frontend-v2",
+  "private": true,
+  "version": "1.0.0",
+  "description": "KARNEX AI Interview Suite — frontend UI (static + React admin dashboard)",
+  "scripts": {
+    "build": "npm ci --prefix frontend/admin-dashboard && npm run build --prefix frontend/admin-dashboard && node scripts/vercel-build.mjs"
+  }
+}

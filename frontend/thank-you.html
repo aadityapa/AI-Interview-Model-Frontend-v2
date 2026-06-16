@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interview Submitted | Karnex</title>
+  <style>
+    :root {
+      --bg: #0d111a;
+      --panel: rgba(20, 25, 40, 0.78);
+      --text: #eef4ff;
+      --muted: #9db0c7;
+      --accent: #34d399;
+      --accent2: #4da4fc;
+      --border: rgba(255, 255, 255, 0.12);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(52, 211, 153, 0.18), transparent 38%),
+        radial-gradient(circle at 80% 85%, rgba(77, 164, 252, 0.14), transparent 40%),
+        var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      padding: 24px;
+    }
+    .card {
+      width: min(560px, 94vw);
+      border: 1px solid var(--border);
+      background: var(--panel);
+      border-radius: 20px;
+      padding: 36px 32px;
+      text-align: center;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+    }
+    .icon-wrap {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, rgba(52, 211, 153, 0.25), rgba(45, 212, 191, 0.08));
+      border: 2px solid rgba(52, 211, 153, 0.45);
+      display: grid;
+      place-items: center;
+      animation: pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+    @keyframes pop {
+      from { transform: scale(0.6); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .icon-wrap svg { width: 36px; height: 36px; stroke: var(--accent); fill: none; stroke-width: 2.2; }
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(22px, 4.5vw, 28px);
+      line-height: 1.25;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .accent { color: var(--accent2); }
+    p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 16px;
+    }
+    .muted-small {
+      font-size: 14px;
+      color: rgba(157, 176, 199, 0.85);
+      margin-top: 8px;
+    }
+    #countdown {
+      margin-top: 18px;
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(148, 163, 184, 0.95);
+      letter-spacing: 0.04em;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="icon-wrap" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <h1>Interview Submitted Successfully</h1>
+    <p>
+      Thank you for completing your AI interview. Your responses have been recorded successfully.
+    </p>
+    <p class="muted-small">You may now close this window.</p>
+    <p id="countdown" hidden></p>
+  </main>
+  <script>
+    (function () {
+      var el = document.getElementById("countdown");
+      if (!el) return;
+      var params = new URLSearchParams(window.location.search || "");
+      var sec = parseInt(params.get("redirect_sec") || "0", 10);
+      if (!sec || sec < 1 || sec > 120) return;
+      el.hidden = false;
+      var left = sec;
+      function tick() {
+        el.textContent = "Redirecting in " + left + "s…";
+        if (left <= 0) {
+          var url = params.get("redirect_url");
+          if (url && /^https?:\/\//i.test(url)) window.location.href = url;
+          return;
+        }
+        left -= 1;
+        setTimeout(tick, 1000);
+      }
+      tick();
+    })();
+  </script>
+</body>
+</html>

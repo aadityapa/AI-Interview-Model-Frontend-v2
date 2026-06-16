@@ -1,0 +1,9 @@
+.env
+.env.*
+!.env.example
+node_modules/
+.pytest_cache/
+frontend/admin-dashboard/node_modules/
+frontend/admin-dashboard/.admin_dashboard_building/
+frontend/admin-dashboard/dist/
+frontend/admin/
