@@ -386,8 +386,11 @@ async function restoreSessionIfPossible() {
     const user = me.user || JSON.parse(rawUser);
     revealAppAfterAuth(user);
     return true;
-  } catch (_) {
-    clearAuthSession();
+  } catch (err) {
+    const msg = String(err?.message || err || "");
+    if (msg.toLowerCase().includes("unauthorized") || msg.includes("401")) {
+      clearAuthSession();
+    }
     return false;
   }
 }

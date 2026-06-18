@@ -446,6 +446,7 @@ function _applyJobConfigToUi(job) {
 
 export async function loadJobConfigs() {
   const select = document.getElementById("jobConfigSelect");
+  if (!hasAuthSession()) return [];
   try {
     if (select) {
       select.classList.add("is-loading");

@@ -5808,7 +5808,7 @@
         <h1 class="hero-title">Karnex <span class="italic">AI</span> Interview Platform</h1>
         <p class="hero-desc">Secure role-based interview system with AI-driven technical questioning, response analysis, and HR-ready evaluation flow.</p>
         <div class="hero-actions">
-          <button class="btn-primary" onclick="document.getElementById('screenStartup').classList.remove('active'); document.getElementById('screenAuth').classList.add('active'); switchAuthMode('login');">Login</button>
+          <button class="btn-primary" onclick="document.getElementById('screenStartup').classList.remove('active'); document.getElementById('screenAuth').classList.add('active'); switchAuthMode('login', registerUser, loginUser);">Login</button>
         </div>
         <div class="startup-login-card">Use your HR account to continue. Register from the login panel if you are a first-time user.</div>
       </div>
@@ -6602,7 +6602,7 @@
 
     </main>
   </div>
-  <script type="module" src="js/app.js?v=14"></script>
+  <script type="module" src="js/app.js?v=15"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
 

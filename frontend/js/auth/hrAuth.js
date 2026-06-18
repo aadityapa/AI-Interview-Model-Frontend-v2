@@ -48,8 +48,10 @@ export function createHrAuth(saveAuthSession, revealAppAfterAuth, setStatus) {
       const token = data.access_token || "";
       if (!token) throw new Error("Access token missing from server.");
       saveAuthSession(user, token, data.expires_at_ist || "");
+      const me = await handleJson(await apiFetch("/auth/me", { method: "GET" }));
+      const verified = me.user || user;
       setStatus("Login successful as HR.");
-      revealAppAfterAuth(user);
+      revealAppAfterAuth(verified);
       return true;
     } catch (err) {
       setStatus(`Login failed: ${err.message}`);

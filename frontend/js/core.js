@@ -1,4 +1,4 @@
-import { clearAuthSession, getAuthToken } from "./auth/session.js";
+import { bumpAuthEpoch, clearAuthSession, getAuthEpoch, getAuthToken } from "./auth/session.js";
 import { resolveInviteDeviceId } from "./invite_device.js";
 
 const API = "";
@@ -28,9 +28,13 @@ export async function handleJsonOrText(res) {
 }
 
 export async function apiFetch(path, init, options = {}) {
+  const epochAtRequest = getAuthEpoch();
   const token = getAuthToken();
   const headers = new Headers((init && init.headers) || {});
-  if (token) headers.set("Authorization", `Bearer ${token}`);
+  if (token) {
+    headers.set("Authorization", `Bearer ${token}`);
+    headers.set("X-Karnex-Authorization", `Bearer ${token}`);
+  }
   if (!headers.has("x-device-id")) {
     const deviceId = resolveInviteDeviceId();
     if (deviceId) headers.set("x-device-id", deviceId);
@@ -53,7 +57,12 @@ export async function apiFetch(path, init, options = {}) {
     if (timer) clearTimeout(timer);
   }
   if (res.status === 401 && token) {
+    // Pre-login requests that finish after login must not wipe the new session.
+    if (epochAtRequest < getAuthEpoch()) {
+      return res;
+    }
     clearAuthSession();
+    bumpAuthEpoch();
     try {
       window.dispatchEvent(new CustomEvent("kx-auth-lost"));
     } catch (_) {

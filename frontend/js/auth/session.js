@@ -41,6 +41,29 @@ export function isAccessTokenExpired(leewaySec = 45) {
   }
 }
 
+/** Incremented on every successful login so stale pre-login 401s cannot wipe the session. */
+let _authEpoch = 0;
+
+export function getAuthEpoch() {
+  try {
+    const stored = Number(sessionStorage.getItem("karnexAuthEpoch") || "0");
+    if (Number.isFinite(stored) && stored > _authEpoch) _authEpoch = stored;
+  } catch {
+    /* ignore */
+  }
+  return _authEpoch;
+}
+
+export function bumpAuthEpoch() {
+  _authEpoch += 1;
+  try {
+    sessionStorage.setItem("karnexAuthEpoch", String(_authEpoch));
+  } catch {
+    /* ignore */
+  }
+  return _authEpoch;
+}
+
 export function hasAuthSession() {
   return !!getAuthToken() && !isAccessTokenExpired();
 }
@@ -50,6 +73,7 @@ export function saveAuthSession(user, token, expiresAtIst) {
     if (user) window.localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
     if (token) window.localStorage.setItem(AUTH_TOKEN_KEY, token);
     if (expiresAtIst) window.localStorage.setItem(AUTH_EXPIRY_KEY, expiresAtIst);
+    bumpAuthEpoch();
   } catch (_) {
     /* ignore quota */
   }
