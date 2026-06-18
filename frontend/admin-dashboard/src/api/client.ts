@@ -65,7 +65,7 @@ export async function authFetch(path: string, init?: RequestInit): Promise<Respo
       if (res.status === 401 && token) {
         clearAuthSession();
         invalidateApiCache();
-        window.setTimeout(() => window.location.reload(), 0);
+        window.location.replace(`${window.location.origin}/`);
       }
       return res;
     }

@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./styles.css";
 import { ThemeProvider } from "./theme/ThemeProvider";
-import { clearAuthSession } from "./lib/authSession";
+import { AUTH_STORAGE_KEYS } from "./lib/authSession";
 
 window.addEventListener("storage", (e: StorageEvent) => {
   if ((e.key === "authToken" || e.key === "authUser") && e.oldValue && !e.newValue) {
@@ -20,14 +20,13 @@ async function maybeAutoClearCache() {
     if (!ver) return;
     const prev = String(window.localStorage.getItem(key) || "").trim();
     if (prev && prev !== ver) {
-      const keep = new Set([key]);
+      const keep = new Set([key, ...AUTH_STORAGE_KEYS]);
       for (let i = window.localStorage.length - 1; i >= 0; i--) {
         const k = window.localStorage.key(i);
         if (!k) continue;
         if (keep.has(k)) continue;
         window.localStorage.removeItem(k);
       }
-      clearAuthSession();
       if (window.caches && typeof window.caches.keys === "function") {
         try {
           const keys = await window.caches.keys();
@@ -46,12 +45,15 @@ async function maybeAutoClearCache() {
   }
 }
 
-void maybeAutoClearCache();
+async function bootstrap() {
+  await maybeAutoClearCache();
+  ReactDOM.createRoot(document.getElementById("root")!).render(
+    <React.StrictMode>
+      <ThemeProvider>
+        <App />
+      </ThemeProvider>
+    </React.StrictMode>,
+  );
+}
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <ThemeProvider>
-      <App />
-    </ThemeProvider>
-  </React.StrictMode>,
-);
+void bootstrap();

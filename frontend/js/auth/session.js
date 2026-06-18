@@ -5,6 +5,7 @@ export const AUTH_TOKEN_KEY = "authToken";
 export const AUTH_EXPIRY_KEY = "authTokenExpiryIst";
 
 const AUTH_KEYS = [AUTH_USER_KEY, AUTH_TOKEN_KEY, AUTH_EXPIRY_KEY];
+export { AUTH_KEYS as AUTH_STORAGE_KEYS };
 
 export function getAuthToken() {
   try {

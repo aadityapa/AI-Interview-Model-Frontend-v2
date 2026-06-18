@@ -51,6 +51,7 @@ import {
   getAuthToken,
   getAuthUserRaw,
   isAccessTokenExpired,
+  AUTH_STORAGE_KEYS,
 } from "./auth/session.js";
 import { activateInterviewSecurity, deactivateInterviewSecurity } from "./interview_security.js";
 import { startFaceMonitoring, stopFaceMonitoring } from "./face_detection.js";
@@ -67,14 +68,13 @@ async function maybeAutoClearCache(scope) {
     if (!ver) return;
     const prev = String(window.localStorage.getItem(key) || "").trim();
     if (prev && prev !== ver) {
-      const keep = new Set([key]);
+      const keep = new Set([key, ...AUTH_STORAGE_KEYS]);
       for (let i = window.localStorage.length - 1; i >= 0; i--) {
         const k = window.localStorage.key(i);
         if (!k) continue;
         if (keep.has(k)) continue;
         window.localStorage.removeItem(k);
       }
-      clearAuthSession();
       if (window.caches && typeof window.caches.keys === "function") {
         try {
           const keys = await window.caches.keys();
@@ -875,7 +875,13 @@ initBrandLogoFallback();
 initHrSetupUi();
 initHrAccessDetailsUi();
 initAutoAdvanceBannerUi();
-maybeAutoClearCache("hr");
+
+async function bootHrPortal() {
+  await maybeAutoClearCache("hr");
+  await bootstrapInviteFlow();
+}
+
+void bootHrPortal();
 
 /**
  * Welcome → Device Test → Invite Login flow (Features 1 + 4, May 2026).
@@ -933,5 +939,3 @@ async function bootstrapInviteFlow() {
     return;
   }
 }
-
-void bootstrapInviteFlow();
