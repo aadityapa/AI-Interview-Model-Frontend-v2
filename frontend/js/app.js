@@ -336,6 +336,7 @@ function revealAppAfterAuth(user) {
     return;
   }
   document.body.classList.remove("interview-mode");
+  loadModels();
   loadHrRecords();
   loadInterviewSchedules();
   loadJobConfigs();
@@ -847,7 +848,6 @@ window.refreshSidebarProfileClock = refreshSidebarProfileClock;
 window.switchAuthPane = switchAuthPane;
 window.switchAuthMode = (mode) => switchAuthMode(mode, registerUser, loginUser);
 
-loadModels();
 initUiSettings();
 initBackground();
 initAvatar();

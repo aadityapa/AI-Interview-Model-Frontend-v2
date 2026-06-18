@@ -1,6 +1,7 @@
 /** HR Setup premium UI — scheduler, skills tags, profile preview (DOM sync only). */
 
 import { apiFetch, handleJson } from "./core.js";
+import { hasAuthSession } from "./auth/session.js";
 
 /** @type {Array<Record<string, unknown>>} */
 let scheduleRows = [];
@@ -541,6 +542,7 @@ export function setHrSchedulerSchedules(rows) {
 }
 
 export async function loadHrSchedulerSchedules() {
+  if (!hasAuthSession()) return;
   try {
     const data = await handleJson(await apiFetch("/hr/schedules", { method: "GET" }));
     setHrSchedulerSchedules(data.schedules || []);
@@ -717,7 +719,6 @@ export function initHrSetupUi() {
     initSchedulerToNow();
   }
   refreshHrSetupSkillsUi();
-  loadHrSchedulerSchedules();
 
   document.addEventListener("kx-hr-setup-skills-updated", refreshHrSetupSkillsUi);
   document.addEventListener("kx-hr-schedules-updated", (e) => {

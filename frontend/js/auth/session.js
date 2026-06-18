@@ -41,6 +41,10 @@ export function isAccessTokenExpired(leewaySec = 45) {
   }
 }
 
+export function hasAuthSession() {
+  return !!getAuthToken() && !isAccessTokenExpired();
+}
+
 export function saveAuthSession(user, token, expiresAtIst) {
   try {
     if (user) window.localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));

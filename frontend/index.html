@@ -6602,7 +6602,7 @@
 
     </main>
   </div>
-  <script type="module" src="js/app.js?v=13"></script>
+  <script type="module" src="js/app.js?v=14"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
 
@@ -6633,11 +6633,6 @@
         if (typeof window.refreshSidebarProfileClock === 'function') {
           window.refreshSidebarProfileClock();
         }
-      }, 1000);
-
-      // --- Auto-load records on page load ---
-      setTimeout(function() {
-        if (typeof loadHrRecords === 'function') loadHrRecords();
       }, 1000);
     });
 

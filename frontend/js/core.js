@@ -52,15 +52,12 @@ export async function apiFetch(path, init, options = {}) {
   } finally {
     if (timer) clearTimeout(timer);
   }
-  if (res.status === 401) {
-    const had = !!token;
+  if (res.status === 401 && token) {
     clearAuthSession();
-    if (had) {
-      try {
-        window.dispatchEvent(new CustomEvent("kx-auth-lost"));
-      } catch (_) {
-        /* ignore */
-      }
+    try {
+      window.dispatchEvent(new CustomEvent("kx-auth-lost"));
+    } catch (_) {
+      /* ignore */
     }
   }
   return res;
