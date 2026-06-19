@@ -1,6 +1,5 @@
 import { state } from "./state.js";
 import { apiFetch, assertBackendOnline, escapeHtml, handleJson, handleJsonOrText } from "./core.js";
-import { hasAuthSession } from "./auth/session.js";
 let reportRefreshTimer = null;
 
 /** Shows or hides the HR Result panel progress strip (spinner + message). */
@@ -19,7 +18,6 @@ export async function loadHrRecords() {
   const select = document.getElementById("recordSelect");
   const status = document.getElementById("recordStatus");
   if (!select) return;
-  if (!hasAuthSession()) return;
   try {
     const data = await handleJson(await apiFetch("/hr-records"));
     const records = Array.isArray(data.records) ? data.records : [];

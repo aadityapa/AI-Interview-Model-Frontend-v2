@@ -1,5 +1,4 @@
 import { apiFetch, assertBackendOnline, handleJson } from "./core.js";
-import { hasAuthSession } from "./auth/session.js";
 import {
   formatHrDateTimeDisplay,
   updateHrSetupProfilePreview,
@@ -24,7 +23,6 @@ export function setCandidateNavigator(showScreenFn) {
 export async function loadModels() {
   const select = document.getElementById("model");
   const status = document.getElementById("hrStatus");
-  if (!hasAuthSession()) return;
   try {
     const data = await handleJson(await apiFetch("/models"));
     if (Array.isArray(data.models) && data.models.length > 0) {
@@ -446,7 +444,6 @@ function _applyJobConfigToUi(job) {
 
 export async function loadJobConfigs() {
   const select = document.getElementById("jobConfigSelect");
-  if (!hasAuthSession()) return [];
   try {
     if (select) {
       select.classList.add("is-loading");
@@ -720,7 +717,6 @@ export function setScheduleFilter(filter) {
 
 export async function loadInterviewSchedules() {
   const status = document.getElementById("scheduleStatus");
-  if (!hasAuthSession()) return;
   try {
     const data = await handleJson(await apiFetch("/hr/schedules", { method: "GET" }));
     const rows = data.schedules || [];

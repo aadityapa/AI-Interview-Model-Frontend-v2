@@ -1,9 +1,10 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import type { LucideIcon } from "lucide-react";
-import { BarChart3, ClipboardList, LayoutTemplate, Sigma, Users, Terminal, Shield, Moon, Sun, LogOut } from "lucide-react";
+import { BarChart3, ClipboardList, Database, LayoutTemplate, Sigma, Users, Terminal, Shield, Moon, Sun, LogOut } from "lucide-react";
 import { KarnexBranding } from "./components/KarnexBranding";
 import { useTheme } from "./theme/ThemeProvider";
+import { getAuthToken } from "./lib/authSession";
 import { performAdminLogout } from "./lib/adminLogout";
 import { navButtonMotion, pageSurfaceMotion, routeSurfaceKey } from "./lib/motionPresets";
 import type { CandidateReportReturnTarget } from "./pages/CandidateReportPage";
@@ -20,10 +21,12 @@ const CandidateReportPage = lazy(() => import("./pages/CandidateReportPage").the
 const PromptLogsPage = lazy(() => import("./pages/PromptLogs").then((m) => ({ default: m.PromptLogsPage })));
 const IntegrityLogsPage = lazy(() => import("./pages/IntegrityLogs").then((m) => ({ default: m.IntegrityLogsPage })));
 const UpcomingInterviewsPage = lazy(() => import("./pages/UpcomingInterviews").then((m) => ({ default: m.UpcomingInterviewsPage })));
+const QuestionBankPage = lazy(() => import("./pages/QuestionBank").then((m) => ({ default: m.QuestionBankPage })));
 
 type View =
   | "dashboard"
   | "templates"
+  | "questionBank"
   | "candidates"
   | "ats"
   | "promptLogs"
@@ -62,7 +65,7 @@ function readInitial(): {
     if (v === "candidateInterviews" && cid) {
       return { view: "candidateInterviews", candidateId: cid, reportInterviewId: "", reportReturnTo: "candidates" };
     }
-    if (v === "ats" || v === "templates" || v === "dashboard" || v === "candidates" || v === "promptLogs" || v === "integrityLogs" || v === "upcomingInterviews") {
+    if (v === "ats" || v === "templates" || v === "dashboard" || v === "candidates" || v === "promptLogs" || v === "integrityLogs" || v === "upcomingInterviews" || v === "questionBank") {
       return { view: v as View, candidateId: "", reportInterviewId: "", reportReturnTo: "candidates" };
     }
   } catch (_) {}
@@ -116,6 +119,33 @@ export default function App() {
   const [reportInterviewId, setReportInterviewId] = useState<string>(initial.reportInterviewId);
   const [reportReturnTo, setReportReturnTo] = useState<CandidateReportReturnTarget>(initial.reportReturnTo);
   const [editingJobId, setEditingJobId] = useState<string | null>(null);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/auth/me", {
+          headers: { Authorization: `Bearer ${getAuthToken()}` },
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!cancelled) setIsSuperAdmin(!!data?.user?.is_super_admin);
+      } catch {
+        /* ignore */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const navItems = [
+    ...HR_PRIMARY_NAV,
+    ...(isSuperAdmin
+      ? [{ target: "questionBank" as View, label: "Question Bank", icon: Database, active: (v: View) => v === "questionBank" }]
+      : []),
+  ];
 
   const surfaceKey = routeSurfaceKey(view, candidateId);
   const pageMotion = pageSurfaceMotion(surfaceKey, !!reduceMotion);
@@ -162,7 +192,7 @@ export default function App() {
           <KarnexBranding size="sm" />
 
           <nav className="flex items-center gap-1 bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl p-1 shadow-inner flex-1 justify-center min-w-0">
-            {HR_PRIMARY_NAV.map((item) => {
+            {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = item.active(view);
               return (
@@ -265,6 +295,8 @@ export default function App() {
               <PromptLogsPage />
             ) : view === "integrityLogs" ? (
               <IntegrityLogsPage />
+            ) : view === "questionBank" ? (
+              <QuestionBankPage />
             ) : view === "upcomingInterviews" ? (
               <UpcomingInterviewsPage onBack={() => goView("dashboard")} />
             ) : (

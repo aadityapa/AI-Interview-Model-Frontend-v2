@@ -51,7 +51,6 @@ import {
   getAuthToken,
   getAuthUserRaw,
   isAccessTokenExpired,
-  AUTH_STORAGE_KEYS,
 } from "./auth/session.js";
 import { activateInterviewSecurity, deactivateInterviewSecurity } from "./interview_security.js";
 import { startFaceMonitoring, stopFaceMonitoring } from "./face_detection.js";
@@ -68,13 +67,14 @@ async function maybeAutoClearCache(scope) {
     if (!ver) return;
     const prev = String(window.localStorage.getItem(key) || "").trim();
     if (prev && prev !== ver) {
-      const keep = new Set([key, ...AUTH_STORAGE_KEYS]);
+      const keep = new Set([key]);
       for (let i = window.localStorage.length - 1; i >= 0; i--) {
         const k = window.localStorage.key(i);
         if (!k) continue;
         if (keep.has(k)) continue;
         window.localStorage.removeItem(k);
       }
+      clearAuthSession();
       if (window.caches && typeof window.caches.keys === "function") {
         try {
           const keys = await window.caches.keys();
@@ -336,7 +336,6 @@ function revealAppAfterAuth(user) {
     return;
   }
   document.body.classList.remove("interview-mode");
-  loadModels();
   loadHrRecords();
   loadInterviewSchedules();
   loadJobConfigs();
@@ -386,11 +385,8 @@ async function restoreSessionIfPossible() {
     const user = me.user || JSON.parse(rawUser);
     revealAppAfterAuth(user);
     return true;
-  } catch (err) {
-    const msg = String(err?.message || err || "");
-    if (msg.toLowerCase().includes("unauthorized") || msg.includes("401")) {
-      clearAuthSession();
-    }
+  } catch (_) {
+    clearAuthSession();
     return false;
   }
 }
@@ -851,6 +847,7 @@ window.refreshSidebarProfileClock = refreshSidebarProfileClock;
 window.switchAuthPane = switchAuthPane;
 window.switchAuthMode = (mode) => switchAuthMode(mode, registerUser, loginUser);
 
+loadModels();
 initUiSettings();
 initBackground();
 initAvatar();
@@ -878,13 +875,7 @@ initBrandLogoFallback();
 initHrSetupUi();
 initHrAccessDetailsUi();
 initAutoAdvanceBannerUi();
-
-async function bootHrPortal() {
-  await maybeAutoClearCache("hr");
-  await bootstrapInviteFlow();
-}
-
-void bootHrPortal();
+maybeAutoClearCache("hr");
 
 /**
  * Welcome → Device Test → Invite Login flow (Features 1 + 4, May 2026).
@@ -942,3 +933,5 @@ async function bootstrapInviteFlow() {
     return;
   }
 }
+
+void bootstrapInviteFlow();

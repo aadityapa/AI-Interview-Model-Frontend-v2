@@ -3,9 +3,9 @@ import { clearAuthSession, getAuthToken } from "../lib/authSession";
 type CacheEntry<T> = { ts: number; value: T };
 const _inflight = new Map<string, Promise<unknown>>();
 const _cache = new Map<string, CacheEntry<unknown>>();
-const DEFAULT_TTL_MS = 30_000;
+const DEFAULT_TTL_MS = 15_000;
 /** Slightly longer TTL for static template list (invalidated on mutations via invalidateApiCache). */
-const CONFIGS_TTL_MS = 90_000;
+const CONFIGS_TTL_MS = 45_000;
 
 const CACHEABLE_PATTERNS = [
   /^\/hr\/dashboard(\?|$)/,
@@ -65,7 +65,7 @@ export async function authFetch(path: string, init?: RequestInit): Promise<Respo
       if (res.status === 401 && token) {
         clearAuthSession();
         invalidateApiCache();
-        window.location.replace(`${window.location.origin}/`);
+        window.setTimeout(() => window.location.reload(), 0);
       }
       return res;
     }

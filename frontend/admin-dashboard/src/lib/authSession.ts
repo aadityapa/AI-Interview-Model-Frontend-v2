@@ -1,8 +1,5 @@
 const AUTH_KEYS = ["authUser", "authToken", "authTokenExpiryIst"] as const;
 
-/** Keys preserved when busting cached JS after a deploy (do not log users out). */
-export const AUTH_STORAGE_KEYS = [...AUTH_KEYS];
-
 export function getAuthToken(): string {
   try {
     return window.localStorage.getItem("authToken") || "";

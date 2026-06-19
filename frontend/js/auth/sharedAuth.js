@@ -45,13 +45,11 @@ export function switchAuthMode(mode, registerHandler, loginHandler) {
   const hrBtn = document.getElementById("hrActionBtn");
   if (hrBtn) {
     hrBtn.innerText = "Sign in";
-    if (typeof loginHandler === "function") {
-      hrBtn.onclick = () => loginHandler("hr");
-    }
+    hrBtn.onclick = () => loginHandler("hr");
   }
 
   const regBtn = document.getElementById("hrRegisterBtn");
-  if (regBtn && typeof registerHandler === "function") {
+  if (regBtn) {
     regBtn.onclick = () => registerHandler("hr");
   }
 
