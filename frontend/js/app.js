@@ -67,14 +67,15 @@ async function maybeAutoClearCache(scope) {
     if (!ver) return;
     const prev = String(window.localStorage.getItem(key) || "").trim();
     if (prev && prev !== ver) {
-      const keep = new Set([key]);
+      // Refresh cached assets on a new backend version WITHOUT logging the user
+      // out — auth keys are preserved so a redeploy never drops the session.
+      const keep = new Set([key, "authUser", "authToken", "authTokenExpiryIst"]);
       for (let i = window.localStorage.length - 1; i >= 0; i--) {
         const k = window.localStorage.key(i);
         if (!k) continue;
         if (keep.has(k)) continue;
         window.localStorage.removeItem(k);
       }
-      clearAuthSession();
       if (window.caches && typeof window.caches.keys === "function") {
         try {
           const keys = await window.caches.keys();
