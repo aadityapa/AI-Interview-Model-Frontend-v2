@@ -35,10 +35,10 @@
     { "source": "/candidates", "destination": "https://ai-interview-backend-u6y0.onrender.com/candidates" },
     { "source": "/health/:path*", "destination": "https://ai-interview-backend-u6y0.onrender.com/health/:path*" },
     { "source": "/health", "destination": "https://ai-interview-backend-u6y0.onrender.com/health" },
-    { "source": "/hr-records/:path*", "destination": "https://ai-interview-backend-u6y0.onrender.com/hr-records/:path*" },
     { "source": "/hr-records", "destination": "https://ai-interview-backend-u6y0.onrender.com/hr-records" },
-    { "source": "/hr-record/:path*", "destination": "https://ai-interview-backend-u6y0.onrender.com/hr-record/:path*" },
+    { "source": "/hr-records/:path*", "destination": "https://ai-interview-backend-u6y0.onrender.com/hr-records/:path*" },
     { "source": "/hr-record", "destination": "https://ai-interview-backend-u6y0.onrender.com/hr-record" },
+    { "source": "/hr-record/:path*", "destination": "https://ai-interview-backend-u6y0.onrender.com/hr-record/:path*" },
     { "source": "/version", "destination": "https://ai-interview-backend-u6y0.onrender.com/version" },
     { "source": "/admin", "destination": "/admin/index.html" },
     { "source": "/admin/", "destination": "/admin/index.html" }
